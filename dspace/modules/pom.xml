@@ -25,13 +25,13 @@
         <module>additions</module>
     </modules>
 
-    <!-- 
+    <!--
          List of enabled DSpace "addon" / local customization Modules to build/install.
-         To disable building of modules, you can use the Maven '-P' commandline 
+         To disable building of modules, you can use the Maven '-P' commandline
          option along with the profile's id.  For example, the following tells
          Maven to *disable* building of 'dspace-oai' and 'dspace-lni' modules:
          'mvn package -P !dspace-oai,!dspace-lni'
-         
+
          Also note that the profile IDs below match the profile IDs of the source
          modules in [dspace-src]/pom.xml, so the above command will also disable the
          compiling of the corresponding source module.
@@ -136,7 +136,6 @@
                 <module>oai</module>
             </modules>
         </profile>
-
         <profile>
             <!--Activates mirage2 on the presence of the property mirage2.on with any value e.g. mvn clean package -Dmirage2.on=on
                 Note the absence of activeByDefault. This module is optional. Also activeByDefault only works when no other profiles are active.
@@ -149,6 +148,13 @@
             </activation>
             <modules>
                 <module>xmlui-mirage2</module>
+        <profile>
+            <id>dspace-knowledgearc-rest</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>knowledgearc-rest</module>
             </modules>
         </profile>
     </profiles>
