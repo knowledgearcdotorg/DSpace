@@ -313,6 +313,27 @@ public class BitstreamStorageManager
 		GeneralFile file = getFile(bitstream);
 
 		if (file instanceof S3File) {
+			long fileSize = is.available();
+
+			String bucketSize = ConfigurationManager.getProperty("s3.bucket.size");
+			long maxSize = 0;
+			if(bucketSize.endsWith("TB")) {
+				maxSize = Long.parseLong(bucketSize.replace("TB", "")) * 1024 * 1024 * 1024 * 1024;
+			} else if(bucketSize.endsWith("GB")) {
+				maxSize = Long.parseLong(bucketSize.replace("GB", "")) * 1024 * 1024 * 1024;
+			} else if(bucketSize.endsWith("MB")) {
+				maxSize = Long.parseLong(bucketSize.replace("MB", "")) * 1024 * 1024;
+			}
+
+			String myQuery = "SELECT SUM(size_bytes) from bitstream where deleted=false";
+			TableRow storage = DatabaseManager.querySingle(context, myQuery);
+			long totalSize = storage.getLongColumn("sum");
+			if((totalSize + fileSize) > maxSize){
+				long leftSize = maxSize - totalSize;
+				log.error("No enough space left in bucket for upload (" + fileSize + " bytes). Only allow: " + leftSize + " bytes.");
+				throw new IOException("No enough space left in bucket for upload (" + fileSize + " bytes). Only allow: " + leftSize + " bytes.");
+			}
+
 			((S3File) file).createS3File(dis);
 			is.close();
 		}
@@ -595,20 +616,26 @@ public class BitstreamStorageManager
      * 
      * @param context
      *            The current context
-     * @param id
-     *            The ID of the bitstream to delete
+     * @param bRow
+     *            The TableRow of the bitstream to delete
      * @exception SQLException
      *                If a problem occurs accessing the RDBMS
      */
-    public static void delete(Context context, int id) throws SQLException
+    public static void delete(Context context, TableRow bRow) throws SQLException, IOException
     {
         DatabaseManager.updateQuery(context,
                 "update Bundle set primary_bitstream_id=null where primary_bitstream_id = ? ",
-                id);
+                bRow.getIntColumn("bitstream_id"));
 
         DatabaseManager.updateQuery(context,
                         "update Bitstream set deleted = '1' where bitstream_id = ? ",
-                        id);
+                        bRow.getIntColumn("bitstream_id"));
+
+		GeneralFile file = getFile(bRow);
+		if (file instanceof S3File) {
+			file.delete();
+		}
+
     }
 
     /**

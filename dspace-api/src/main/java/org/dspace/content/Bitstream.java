@@ -510,7 +510,7 @@ public class Bitstream extends DSpaceObject
      * 
      * @throws SQLException
      */
-    void delete() throws SQLException
+    void delete() throws SQLException, IOException
     {
         boolean oracle = DatabaseManager.isOracle();
 
@@ -536,8 +536,7 @@ public class Bitstream extends DSpaceObject
                 query, bRow.getIntColumn("bitstream_id"));
 
         // Remove bitstream itself
-        BitstreamStorageManager.delete(ourContext, bRow
-                .getIntColumn("bitstream_id"));
+        BitstreamStorageManager.delete(ourContext, bRow);
 
         removeMetadataFromDatabase();
     }
