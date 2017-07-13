@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import org.apache.log4j.Logger;
 import org.dspace.checker.BitstreamInfoDAO;
 import org.dspace.core.ConfigurationManager;
@@ -117,7 +120,7 @@ public class BitstreamStorageManager
 		String sAssetstoreDir = ConfigurationManager
 				.getProperty("assetstore.dir");
  
-		// see if conventional assetstore or srb
+		// see if conventional assetstore or srb or s3
 		if (sAssetstoreDir != null) {
 			stores.add(sAssetstoreDir); // conventional (non-srb)
 		} else if (ConfigurationManager.getProperty("srb.host") != null) {
@@ -131,6 +134,11 @@ public class BitstreamStorageManager
 					ConfigurationManager
 							.getProperty("srb.defaultstorageresource"),
 					ConfigurationManager.getProperty("srb.mcatzone")));
+		} else if (ConfigurationManager.getProperty("s3.bucket") != null) {
+			stores.add(new AmazonS3Client(new BasicAWSCredentials(
+					ConfigurationManager.getProperty("s3.secret_key_id"),
+					ConfigurationManager.getProperty("s3.secret_key_access")
+			)));
 		} else {
 			log.error("No default assetstore");
 		}
@@ -166,6 +174,7 @@ public class BitstreamStorageManager
 		// the elements (objects) in the list are class
 		//   (1) String - conventional non-srb assetstore
 		//   (2) SRBAccount - srb assetstore
+		//   (3) AmazonS3 - s3 assetstore
 		assetStores = new GeneralFile[stores.size()];
 		for (int i = 0; i < stores.size(); i++) {
 			Object o = stores.get(i);
@@ -199,6 +208,8 @@ public class BitstreamStorageManager
 					log.error("srb.parentdir is undefined for assetstore " + i);
 				}
 				assetStores[i] = new SRBFile(srbFileSystem, sSRBAssetstore);
+			} else if (o instanceof AmazonS3) {
+				assetStores[i] = new S3File((AmazonS3) o);
 			} else {
 				log.error("Unexpected " + o.getClass().toString()
 						+ " with assetstore " + i);
@@ -285,10 +296,28 @@ public class BitstreamStorageManager
             throw sqle;
         }
 
-        // Where on the file system will this new bitstream go?
+		// Read through a digest input stream that will work out the MD5
+		DigestInputStream dis = null;
+
+		try
+		{
+			dis = new DigestInputStream(is, MessageDigest.getInstance("MD5"));
+		}
+		// Should never happen
+		catch (NoSuchAlgorithmException nsae)
+		{
+			log.warn("Caught NoSuchAlgorithmException", nsae);
+		}
+
+		// Where on the file system will this new bitstream go?
 		GeneralFile file = getFile(bitstream);
 
-        // Make the parent dirs if necessary
+		if (file instanceof S3File) {
+			((S3File) file).createS3File(dis);
+			is.close();
+		}
+		else{
+		// Make the parent dirs if necessary
 		GeneralFile parent = file.getParentFile();
 
         if (!parent.exists())
@@ -301,22 +330,11 @@ public class BitstreamStorageManager
 
 		GeneralFileOutputStream fos = FileFactory.newFileOutputStream(file);
 
-		// Read through a digest input stream that will work out the MD5
-        DigestInputStream dis = null;
-
-        try
-        {
-            dis = new DigestInputStream(is, MessageDigest.getInstance("MD5"));
-        }
-        // Should never happen
-        catch (NoSuchAlgorithmException nsae)
-        {
-            log.warn("Caught NoSuchAlgorithmException", nsae);
-        }
 
         Utils.bufferedCopy(dis, fos);
         fos.close();
         is.close();
+		}
 
         bitstream.setColumn("size_bytes", file.length());
 
@@ -464,6 +482,41 @@ public class BitstreamStorageManager
 			bitstream.setColumn("checksum", 
 					Utils.toHex(md.digest(sFilename.getBytes())));
 		}
+		else if (file instanceof S3File)
+		{
+			// get MD5 on the file for s3 file
+			DigestInputStream dis = null;
+			try
+			{
+				dis = new DigestInputStream(((S3File)file).retrieveS3File(),
+						MessageDigest.getInstance("MD5"));
+			}
+			catch (NoSuchAlgorithmException e)
+			{
+				log.warn("Caught NoSuchAlgorithmException", e);
+				throw new IOException("Invalid checksum algorithm", e);
+			}
+			catch (IOException e)
+			{
+				log.error("File: " + file.getAbsolutePath()
+						+ " to be registered cannot be opened - is it "
+						+ "really there?");
+				throw e;
+			}
+			final int BUFFER_SIZE = 1024 * 4;
+			final byte[] buffer = new byte[BUFFER_SIZE];
+			while (true)
+			{
+				final int count = dis.read(buffer, 0, BUFFER_SIZE);
+				if (count == -1)
+				{
+					break;
+				}
+			}
+			bitstream.setColumn("checksum", Utils.toHex(dis.getMessageDigest()
+					.digest()));
+			dis.close();
+		}
 		else
 		{
 			throw new IOException("Unrecognized file type - "
@@ -522,6 +575,9 @@ public class BitstreamStorageManager
 
 		GeneralFile file = getFile(bitstream);
 
+		if (file instanceof S3File) {
+			return ((S3File) file).retrieveS3File();
+		}
 		return (file != null) ? FileFactory.newFileInputStream(file) : null;
     }
 
@@ -663,7 +719,7 @@ public class BitstreamStorageManager
                     // and directories have already been deleted
                     // if this is turned off then it still looks like the
                     // file exists
-                    if( success )
+                    if( success && !(file instanceof S3File))
                     {
                         deleteParents(file);
                     }
@@ -864,6 +920,17 @@ public class BitstreamStorageManager
 			}
 			return new SRBFile((SRBFile) assetstore, bufFilename.toString());
 		}
+		if (assetstore instanceof S3File) {
+			bufFilename.append(sIntermediatePath);
+			bufFilename.append(sInternalId);
+			if (log.isDebugEnabled()) {
+				log.debug("S3 filename for " + sInternalId + " is "
+						+ ((S3File) assetstore).toString()
+						+ bufFilename.toString());
+			}
+			return new S3File(((S3File) assetstore).amazonS3, bufFilename.toString());
+		}
+
 		return null;
     }
 
