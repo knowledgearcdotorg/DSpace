@@ -40,8 +40,10 @@ public class S3File extends GeneralFile{
 
     public void createS3File(InputStream is) throws IOException {
         try {
-            amazonS3.putObject(new PutObjectRequest(ConfigurationManager.getProperty("s3.bucket"),
-                    fileName, is, new ObjectMetadata()));
+            PutObjectRequest putObjectRequest = new PutObjectRequest(ConfigurationManager.getProperty("s3.bucket"), fileName, is, new ObjectMetadata());
+            putObjectRequest.getRequestClientOptions().setReadLimit(100000);
+
+            amazonS3.putObject(putObjectRequest);
         } catch (AmazonServiceException ase) {
             log.error("Caught an AmazonServiceException, which means your request made it "
                     + "to Amazon S3, but was rejected with an error response for some reason.");
