@@ -259,7 +259,7 @@ public class ItemEntity extends ItemEntityTrim {
 
             Integer eid = Integer.parseInt((String) inputVar.get("eid"));
             MetadataValue metadataValue = MetadataValue.find(context, eid);
-            if (metadataValue != null && metadataValue.getItemId() == id) {
+            if (metadataValue != null && metadataValue.getResourceId() == id) {
                 metadataValue.delete(context);
             } else {
                 throw new EntityException("Internal server error", "No such metadata value or not belongs to same item", 500);

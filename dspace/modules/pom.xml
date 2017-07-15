@@ -148,6 +148,8 @@
             </activation>
             <modules>
                 <module>xmlui-mirage2</module>
+            </modules>
+        </profile>
         <profile>
             <id>dspace-knowledgearc-rest</id>
             <activation>

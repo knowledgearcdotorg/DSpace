@@ -638,6 +638,36 @@ public class BitstreamStorageManager
 
     }
 
+	/**
+	 * <p>
+	 * Remove a bitstream from the asset store. This method does not delete any
+	 * bits, but simply marks the bitstreams as deleted (the context still needs
+	 * to be completed to finalize the transaction).
+	 * </p>
+	 *
+	 * <p>
+	 * If the context is aborted, the bitstreams deletion status remains
+	 * unchanged.
+	 * </p>
+	 *
+	 * @param context
+	 *            The current context
+	 * @param id
+	 *            The ID of the bitstream to delete
+	 * @exception SQLException
+	 *                If a problem occurs accessing the RDBMS
+	 */
+	public static void delete(Context context, int id) throws SQLException
+	{
+		DatabaseManager.updateQuery(context,
+				"update Bundle set primary_bitstream_id=null where primary_bitstream_id = ? ",
+				id);
+
+		DatabaseManager.updateQuery(context,
+				"update Bitstream set deleted = '1' where bitstream_id = ? ",
+				id);
+	}
+
     /**
      * Clean up the bitstream storage area. This method deletes any bitstreams
      * which are more than 1 hour old and marked deleted. The deletions cannot
