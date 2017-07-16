@@ -582,6 +582,18 @@
            </modules>
        </profile>
 
+       <!--  Builds REST WAR for DSpace -->
+       <profile>
+           <id>dspace-knowledgearc-rest</id>
+           <activation>
+               <file>
+                   <exists>dspace-knowledgearc-rest/pom.xml</exists>
+               </file>
+           </activation>
+           <modules>
+               <module>dspace-knowledgearc-rest</module>
+           </modules>
+       </profile>
 
         <!--
            Builds SWORD WAR for DSpace
@@ -675,21 +687,6 @@
             </modules>
         </profile>
 
-        <!--
-           Builds REST WAR for DSpace
-        -->
-        <profile>
-            <id>dspace-knowledgearc-rest</id>
-            <activation>
-                <file>
-                    <exists>dspace-knowledgearc-rest/pom.xml</exists>
-                </file>
-            </activation>
-            <modules>
-                <module>dspace-knowledgearc-rest</module>
-            </modules>
-        </profile>
-
       <!--
          The 'release' profile is used by the 'maven-release-plugin' (see above)
          to actually perform a DSpace software release to Maven central.
@@ -708,13 +705,13 @@
              <module>dspace-oai</module>
              <module>dspace-rdf</module>
              <module>dspace-rest</module>
+             <module>dspace-knowledgearc-rest</module>
              <module>dspace-services</module>
              <module>dspace-solr</module>
              <module>dspace-sword</module>
              <module>dspace-swordv2</module>
              <module>dspace-xmlui-mirage2</module>
              <module>dspace-xmlui</module>
-            <module>dspace-knowledgearc-rest</module>
          </modules>
       </profile>
 

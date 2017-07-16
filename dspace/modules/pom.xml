@@ -93,6 +93,17 @@
             </modules>
         </profile>
         <profile>
+            <id>dspace-knowledgearc-rest</id>
+            <activation>
+                <file>
+                    <exists>knowledgearc-rest/pom.xml</exists>
+                </file>
+            </activation>
+            <modules>
+                <module>knowledgearc-rest</module>
+            </modules>
+        </profile>
+        <profile>
             <id>dspace-sword</id>
             <activation>
                 <file>
@@ -148,15 +159,6 @@
             </activation>
             <modules>
                 <module>xmlui-mirage2</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>dspace-knowledgearc-rest</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>knowledgearc-rest</module>
             </modules>
         </profile>
     </profiles>
