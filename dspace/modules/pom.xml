@@ -84,6 +84,17 @@
             </modules>
         </profile>
         <profile>
+            <id>dspace-knowledgearc-rest</id>
+            <activation>
+                <file>
+                    <exists>knowledgearc-rest/pom.xml</exists>
+                </file>
+            </activation>
+            <modules>
+                <module>knowledgearc-rest</module>
+            </modules>
+        </profile>
+        <profile>
             <id>dspace-sword</id>
             <activation>
                 <file>

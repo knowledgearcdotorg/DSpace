@@ -658,7 +658,18 @@
                <module>dspace-rest</module>
            </modules>
        </profile>
-
+        <!--  Builds REST WAR for DSpace -->
+        <profile>
+            <id>dspace-knowledgearc-rest</id>
+            <activation>
+                <file>
+                    <exists>dspace-knowledgearc-rest/pom.xml</exists>
+                </file>
+            </activation>
+            <modules>
+                <module>dspace-knowledgearc-rest</module>
+            </modules>
+        </profile>
 
         <!--
            Builds SWORD WAR for DSpace
@@ -755,6 +766,7 @@
                 <module>dspace-oai</module>
                 <module>dspace-rdf</module>
                 <module>dspace-rest</module>
+                <module>dspace-knowledgearc-rest</module>
                 <module>dspace-services</module>
                 <module>dspace-solr</module>
                 <module>dspace-sword</module>
@@ -938,6 +950,19 @@
                 <artifactId>dspace-rest</artifactId>
                 <version>6.2-SNAPSHOT</version>
                 <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.dspace</groupId>
+                <artifactId>dspace-knowledgearc-rest</artifactId>
+                <version>4.0-SNAPSHOT</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.dspace</groupId>
+                <artifactId>dspace-knowledgearc-rest</artifactId>
+                <version>4.0-SNAPSHOT</version>
+                <type>jar</type>
+                <classifier>classes</classifier>
             </dependency>
             <dependency>
                 <groupId>org.dspace</groupId>
