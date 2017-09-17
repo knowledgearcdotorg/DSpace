@@ -3,14 +3,14 @@
     <groupId>org.dspace</groupId>
     <artifactId>dspace-knowledgearc-rest</artifactId>
     <packaging>war</packaging>
-    <version>5.8-SNAPSHOT</version>
+    <version>5.9-SNAPSHOT</version>
     <name>DSpace KnowledgeArc REST API</name>
     <description>The REST API for DSpace using the Sakai EntityBus</description>
 
     <parent>
         <groupId>org.dspace</groupId>
         <artifactId>dspace-parent</artifactId>
-        <version>5.8-SNAPSHOT</version>
+        <version>5.9-SNAPSHOT</version>
         <relativePath>..</relativePath>
     </parent>
 

@@ -11,7 +11,7 @@
    <parent>
       <groupId>org.dspace</groupId>
       <artifactId>modules</artifactId>
-      <version>5.8-SNAPSHOT</version>
+      <version>5.9-SNAPSHOT</version>
       <relativePath>..</relativePath>
    </parent>
 
@@ -85,7 +85,7 @@
          <groupId>org.dspace</groupId>
          <artifactId>dspace-knowledgearc-rest</artifactId>
          <type>war</type>
-          <version>5.8-SNAPSHOT</version>
+          <version>5.9-SNAPSHOT</version>
       </dependency>
 
        <dependency>
@@ -93,7 +93,7 @@
            <artifactId>dspace-knowledgearc-rest</artifactId>
            <type>jar</type>
            <classifier>classes</classifier>
-           <version>5.8-SNAPSHOT</version>
+           <version>5.9-SNAPSHOT</version>
        </dependency>
 
        <dependency>
