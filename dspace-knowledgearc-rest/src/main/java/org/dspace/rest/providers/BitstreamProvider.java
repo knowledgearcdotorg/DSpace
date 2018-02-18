@@ -29,6 +29,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -66,18 +67,17 @@ public class BitstreamProvider extends AbstractBaseProvider implements CoreEntit
                 response.setContentType(bst.getFormat().getMIMEType());
                 response.addHeader("Content-Disposition", "attachment; filename=" + bst.getName());
                 response.setContentLength((int) bst.getSize());
-                BufferedInputStream buf = new BufferedInputStream(bst.retrieve());
+                try (InputStream is = bst.retrieve()) {
+                    try (BufferedInputStream buf = new BufferedInputStream(is)) {
+                        int readBytes;
+                        while ((readBytes = buf.read()) != -1) {
+                            stream.write(readBytes);
+                        }
 
-                int readBytes;
-                while ((readBytes = buf.read()) != -1) {
-                    stream.write(readBytes);
-                }
-
-                if (stream != null) {
-                    stream.close();
-                }
-                if (buf != null) {
-                    buf.close();
+                        if (stream != null) {
+                            stream.close();
+                        }
+                    }
                 }
             }
         } catch (IOException ex) {

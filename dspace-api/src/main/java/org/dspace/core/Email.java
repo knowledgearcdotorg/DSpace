@@ -219,6 +219,14 @@ public class Email
      */
     public void reset()
     {
+        for (InputStreamAttachment isa : moreAttachments) {
+            try {
+                isa.is.close();
+            } catch (Exception e) {
+                log.info("Exception while closing streams during resetting object", e);
+            }
+        }
+        
         arguments = new ArrayList<Object>(50);
         recipients = new ArrayList<String>(50);
         attachments = new ArrayList<FileAttachment>(10);
@@ -357,6 +365,14 @@ public class Email
         }
         else
             Transport.send(message);
+
+        for (InputStreamAttachment isa : moreAttachments) {
+            try {
+                isa.is.close();
+            } catch (Exception e) {
+                log.info("Exception while closing streams after sending email", e);
+            }
+        }
     }
 
     /**
