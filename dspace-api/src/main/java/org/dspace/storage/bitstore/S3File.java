@@ -63,7 +63,7 @@ public class S3File extends GeneralFile{
     }
 
     public InputStream retrieveS3File() throws IOException {
-        log.debug("Dumping stacktrace when S3 file is retrieved:", new Exception("Exception created for dumping stack trace when S3 file is retrived"));
+        log.warn("Dumping stacktrace when S3 file is retrieved:", new Exception("Exception created for dumping stack trace when S3 file is retrived"));
         try {
             return amazonS3.getObject(new GetObjectRequest(
                     ConfigurationManager.getProperty("s3.bucket"), fileName)).getObjectContent();
