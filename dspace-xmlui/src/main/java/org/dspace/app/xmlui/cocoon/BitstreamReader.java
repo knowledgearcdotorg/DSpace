@@ -752,6 +752,11 @@ public class BitstreamReader extends AbstractReader implements Recyclable
     public void recycle() {
         this.response = null;
         this.request = null;
+        try {
+            this.bitstreamInputStream.close();
+        } catch (IOException e) {
+            log.warn("Exception when trying to close InputStream in recycle", e);
+        }
         this.bitstreamInputStream = null;
         this.bitstreamSize = 0;
         this.bitstreamMimeType = null;
