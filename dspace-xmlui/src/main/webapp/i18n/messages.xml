@@ -717,6 +717,19 @@
 	<!-- submission progress bar messages -->
 	<message key="xmlui.Submission.submit.progressbar.initial-questions">Initial Questions</message>
 	<message key="xmlui.Submission.submit.progressbar.describe">Describe</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.1">Authors Details</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.2">Item Details</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.3">Pubication Information</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.4">Describe 4</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.5">Describe 5</message>
+	
+
+	<message key="xmlui.Submission.submit.progressbar.describe.detail.1">Describe your authors, adding additional information if required</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.detail.2">Describe your Item, adding additional information if required</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.detail.3">Describe your pblication information</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.detail.4">Describe detail 4</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.detail.5">Describe detail 5</message>
+
     <message key="xmlui.Submission.submit.progressbar.access">Access</message>
     <message key="xmlui.Submission.submit.progressbar.upload">Upload</message>
 	<message key="xmlui.Submission.submit.progressbar.verify">Review</message>
