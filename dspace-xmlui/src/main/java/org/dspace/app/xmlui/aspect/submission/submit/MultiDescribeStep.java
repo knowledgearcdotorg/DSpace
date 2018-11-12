@@ -162,44 +162,7 @@ public class MultiDescribeStep extends AbstractSubmissionStep
                 pageMeta.addMetadata("page", "jumpTo").addContent(jumpTo);
             }
         }
-        /**
-         * Add a submission progress list to the current div for this step with multiple descript step. 
-         * 
-         * @param div The division to add the list to.
-         */
-        public void addSubmissionProgressList(Division div) throws WingException
-        {
-            // each entry in progress bar is placed under this "submit-progress" div
-            List progress = div.addList("submit-progress",List.TYPE_PROGRESS);
-            
-            // get Map of progress bar information
-            // key: entry # (i.e. step & page), 
-            // value: entry name key (i.e. display name)
-            Map<String, String> progBarInfo = this.submissionInfo.getProgressBarInfo();
-
-            // add each entry to progress bar
-            for (Map.Entry<String, String> progBarEntry : progBarInfo.entrySet())
-            {
-                log.info(progBarEntry.toString());
-                // Since we are using XML-UI, we need to prepend the heading key with "xmlui.Submission."
-                String entryNameKey = "xmlui.Submission." + progBarEntry.getValue();
-                
-                
-                // the value of entryNum is current step & page 
-                // (e.g. 1.2 is page 2 of step 1) 
-                StepAndPage currentStepAndPage = new StepAndPage(progBarEntry.getKey());
-
-                if (entryNameKey.equalsIgnoreCase("xmlui.Submission.submit.progressbar.describe")) {
-                    entryNameKey = entryNameKey + "." + currentStepAndPage.getPage();
-                }
-                
-                log.info("CustomDescribe Key:" + entryNameKey + "." + currentStepAndPage.getPage());
-                // add a button to progress bar for this step & page
-                addJumpButton(progress, message(entryNameKey), currentStepAndPage);
-            }
-            
-        }
-
+       
         public void addBody(Body body) throws SAXException, WingException,
         UIException, SQLException, IOException, AuthorizeException
         {

@@ -278,6 +278,15 @@ public abstract class AbstractStep extends AbstractDSpaceTransformer
 			// the value of entryNum is current step & page 
 			// (e.g. 1.2 is page 2 of step 1) 
 			StepAndPage currentStepAndPage = new StepAndPage(progBarEntry.getKey());
+
+            //Custom Title for Multi Page Describe 
+            if (entryNameKey.equalsIgnoreCase("xmlui.Submission.submit.progressbar.describe")) {
+                
+                String pagedEtntryNameKey = entryNameKey + "." + currentStepAndPage.getPage();
+                
+                if(message(pagedEtntryNameKey)!=null)
+                    entryNameKey = pagedEtntryNameKey;
+            }
 			
             // add a button to progress bar for this step & page
             addJumpButton(progress, message(entryNameKey), currentStepAndPage);
