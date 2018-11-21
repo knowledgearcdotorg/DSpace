@@ -191,7 +191,7 @@ public class MultiDescribeStep extends AbstractSubmissionStep
                 List form = div.addList("submit-describe",List.TYPE_FORM);
                 // form.setHead(T_head);
 
-                form.setHead(message("xmlui.Submission.submit.progressbar.describe."+getPage()));
+                form.setHead(message("xmlui.Submission.submit.progressbar.describe.title."+getPage()));
 
                 form.addItem(message("xmlui.Submission.submit.progressbar.describe.detail."+getPage()));
                 // Fetch the document type (dc.type)

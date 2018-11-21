@@ -723,6 +723,11 @@
 	<message key="xmlui.Submission.submit.progressbar.describe.4">Describe 4</message>
 	<message key="xmlui.Submission.submit.progressbar.describe.5">Describe 5</message>
 	
+	<message key="xmlui.Submission.submit.progressbar.describe.title.1">Author Info</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.title.2">Describe</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.title.3">Degree Info</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.title.4">Event Info</message>
+	<message key="xmlui.Submission.submit.progressbar.describe.title.5">Publication Info</message>
 
 	<message key="xmlui.Submission.submit.progressbar.describe.detail.1">Describe your authors, adding additional information if required</message>
 	<message key="xmlui.Submission.submit.progressbar.describe.detail.2">Describe your Item, adding additional information if required</message>
