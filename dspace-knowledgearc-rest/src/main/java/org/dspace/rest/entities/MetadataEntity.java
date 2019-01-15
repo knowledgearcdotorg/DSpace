@@ -18,6 +18,7 @@ public class MetadataEntity extends MetadataEntityId {
     private String qualifier;
     private String schema;
     private String value;
+    private String language;
 
     public MetadataEntity(MetadataValue mdValue, MetadataField mdField, MetadataSchema mdSchema) {
         super(mdValue);
@@ -25,6 +26,7 @@ public class MetadataEntity extends MetadataEntityId {
         this.qualifier = mdField.getQualifier();
         this.schema = mdSchema.getName();
         this.value = mdValue.getValue();
+        this.language = mdValue.getLanguage();
 
     }
 
@@ -42,5 +44,9 @@ public class MetadataEntity extends MetadataEntityId {
 
     public String getValue() {
         return value;
+    }
+
+    public String getLanguage() {
+        return language;
     }
 }
