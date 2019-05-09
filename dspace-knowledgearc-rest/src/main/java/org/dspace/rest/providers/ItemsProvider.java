@@ -43,6 +43,7 @@ public class ItemsProvider extends AbstractBaseProvider implements CoreEntityPro
         func2actionMapPUT.put("editMetadata", "metadata");
         func2actionMapDELETE.put("removeMetadata", "metadata");
         func2actionMapDELETE.put("removeItem", "");
+        func2actionMapGET.put("getPolicies", "policies");
         entityConstructor = processedEntity.getDeclaredConstructor();
         initMappings(processedEntity);
     }

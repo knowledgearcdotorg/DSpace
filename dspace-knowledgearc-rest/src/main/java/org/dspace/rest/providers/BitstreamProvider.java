@@ -43,6 +43,7 @@ public class BitstreamProvider extends AbstractBaseProvider implements CoreEntit
         entityProviderManager.registerEntityProvider(this);
         processedEntity = BitstreamEntity.class;
         func2actionMapDELETE.put("removeBitstream", "");
+        func2actionMapGET.put("getPolicies", "policies");
         entityConstructor = processedEntity.getDeclaredConstructor();
         initMappings(processedEntity);
     }

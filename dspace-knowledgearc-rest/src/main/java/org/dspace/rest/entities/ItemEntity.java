@@ -10,6 +10,7 @@ package org.dspace.rest.entities;
 
 import org.dspace.authorize.AuthorizeException;
 import org.dspace.authorize.AuthorizeManager;
+import org.dspace.authorize.ResourcePolicy;
 import org.dspace.content.*;
 import org.dspace.content.Collection;
 import org.dspace.content.authority.Choices;
@@ -316,6 +317,32 @@ public class ItemEntity extends ItemEntityTrim {
             throw new EntityException("Internal server error", "SQL error", 500);
         } catch (AuthorizeException ex) {
             throw new EntityException("Forbidden", "Forbidden", 403);
+        } catch (NumberFormatException ex) {
+            throw new EntityException("Bad request", "Could not parse input", 400);
+        }
+    }
+
+
+    /**
+     * New API to get policies for item.
+     *
+     * @author Oleg
+     */
+    public Object getPolicies(EntityReference ref, UserRequestParams uparams, Context context) {
+        try {
+            Item res = Item.find(context, Integer.parseInt(ref.getId()));
+//            AuthorizeManager.authorizeAction(context, res, Constants.READ);
+            List<Object> entities = new ArrayList<Object>();
+
+            List<ResourcePolicy> policies = AuthorizeManager.getPolicies(context, res);
+            for (ResourcePolicy policy : policies) {
+                entities.add(new PolicyEntity(policy));
+            }
+            return entities;
+        } catch (SQLException ex) {
+            throw new EntityException("Internal server error", "SQL error", 500);
+//        } catch (AuthorizeException ex) {
+//            throw new EntityException("Forbidden", "Forbidden", 403);
         } catch (NumberFormatException ex) {
             throw new EntityException("Bad request", "Could not parse input", 400);
         }
